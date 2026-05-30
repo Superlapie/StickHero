@@ -11,7 +11,8 @@ data class AttackDefinition(
     val knockback: Knockback,
     val hitstunDuration: Float,
     val hitstopDuration: Float = 0.045f,
-    val impactShake: Float = 0.5f
+    val impactShake: Float = 0.5f,
+    val holdActiveCommand: com.stickhero.game.input.GameCommand? = null
 ) {
     val totalDuration: Float = startupDuration + activeDuration + recoveryDuration
 }

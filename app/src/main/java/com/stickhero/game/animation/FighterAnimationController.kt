@@ -6,7 +6,7 @@ import com.stickhero.game.renderstate.MotionTrailPoint
 
 class FighterAnimationController(
     private val clock: AnimationClock = AnimationClock(),
-    private val player: AnimationPlayer = AnimationPlayer()
+    private val player: StickAnimationPlayer = StickAnimationPlayer()
 ) {
     fun update(fighter: Fighter, moving: Boolean, crouching: Boolean, deltaSeconds: Float) {
         ageMotionTrail(fighter, deltaSeconds)
@@ -24,19 +24,16 @@ class FighterAnimationController(
             fighter.runtime.animationTime = 0f
         }
         fighter.runtime.animationClipId = clipId
-        val clip = PoseLibrary.clip(clipId)
+        val clip = StickAnimationLibrary.clip(clipId)
         fighter.runtime.animationTime = player.advanceTime(clock.advance(fighter.runtime.animationTime, 0f), clip, deltaSeconds)
-        fighter.runtime.pose = when (fighter.runtime.state) {
-            FighterState.Crouch -> PoseLibrary.crouchPose(fighter.runtime.crouchAmount)
-            else -> player.sample(clip, fighter.runtime.animationTime)
-        }
+        fighter.runtime.frame = player.sample(clip, fighter.runtime.animationTime)
         updateMotionTrail(fighter)
     }
 
     private fun desiredClipId(fighter: Fighter): String {
         fighter.runtime.activeAttack?.let { return it.definition.animationClipId }
         return when (fighter.runtime.state) {
-            FighterState.Walk -> PoseLibrary.WALK_FORWARD
+            FighterState.Walk -> movementClipId(fighter)
             FighterState.Jump -> PoseLibrary.JUMP
             FighterState.Crouch -> PoseLibrary.CROUCH
             FighterState.Attack -> fighter.runtime.animationClipId
@@ -46,13 +43,27 @@ class FighterAnimationController(
         }
     }
 
+    private fun movementClipId(fighter: Fighter): String {
+        val direction = if (fighter.runtime.facing == com.stickhero.game.fighter.FacingDirection.Right) 1f else -1f
+        return if (fighter.runtime.velocity.x * direction >= 0f) {
+            PoseLibrary.WALK_FORWARD
+        } else {
+            PoseLibrary.WALK_BACKWARD
+        }
+    }
+
     private fun updateMotionTrail(fighter: Fighter) {
         val attack = fighter.runtime.activeAttack ?: return
         val clip = attack.definition.animationClipId
         val fastWindow = attack.elapsed >= attack.definition.startupDuration * 0.75f &&
             attack.elapsed <= attack.definition.startupDuration + attack.definition.activeDuration + 0.04f
         if (!fastWindow) return
-        val hand = fighter.runtime.pose.worldPosition(JointId.RightHand, fighter.position, fighter.runtime.facing)
+        val local = fighter.runtime.frame.leadHand + fighter.runtime.frame.rootOffset
+        val direction = if (fighter.runtime.facing == com.stickhero.game.fighter.FacingDirection.Right) 1f else -1f
+        val hand = com.stickhero.game.physics.Vec2(
+            fighter.position.x + local.x * direction,
+            fighter.position.y + local.y
+        )
         val duration = if (clip == PoseLibrary.HEAVY_PUNCH) 0.18f else 0.12f
         fighter.runtime.motionTrail += MotionTrailPoint(hand, ageSeconds = 0f, durationSeconds = duration)
         if (fighter.runtime.motionTrail.size > 8) {

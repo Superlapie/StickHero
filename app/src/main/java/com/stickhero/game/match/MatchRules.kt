@@ -1,12 +1,18 @@
 package com.stickhero.game.match
 
 import com.stickhero.game.core.GamePhase
+import com.stickhero.game.core.GameMode
 import com.stickhero.game.core.GameWorld
 
 class MatchRules {
-    fun phaseFor(world: GameWorld): GamePhase = when {
-        !world.player.isAlive() -> GamePhase.Lose
-        !world.enemy.isAlive() -> GamePhase.Win
-        else -> GamePhase.Playing
+    fun phaseFor(world: GameWorld): GamePhase {
+        val enemy = world.enemy
+        return when {
+            !world.player.isAlive() -> GamePhase.Lose
+            world.mode == GameMode.DebugSandbox -> GamePhase.Playing
+            enemy == null -> GamePhase.Playing
+            !enemy.isAlive() -> GamePhase.Win
+            else -> GamePhase.Playing
+        }
     }
 }

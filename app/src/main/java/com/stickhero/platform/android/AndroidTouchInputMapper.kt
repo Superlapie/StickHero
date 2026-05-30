@@ -66,12 +66,22 @@ class AndroidTouchInputMapper {
         if (joystickY > 0.55f) commands += GameCommand.Crouch
         for ((x, y) in activePointers.values) {
             if (attackBounds.contains(x, y)) commands += GameCommand.Attack
+            if (specialAttackBounds.contains(x, y)) commands += GameCommand.SpecialAttack
         }
         if (restartPressed) {
             commands += GameCommand.Restart
             restartPressed = false
         }
         return InputState(commands, joystickX, joystickY)
+    }
+
+    @Synchronized
+    fun reset() {
+        activePointers.clear()
+        restartPressed = false
+        joystickPointerId = null
+        joystickX = 0f
+        joystickY = 0f
     }
 
     fun updateControlBounds(width: Int, height: Int) {
@@ -89,7 +99,14 @@ class AndroidTouchInputMapper {
             joystickBaseY + stickRadius * 1.55f
         )
         val attack = height * 0.19f
+        val gap = height * 0.025f
         attackBounds.set(width - margin - attack, bottom - attack, width - margin, bottom)
+        specialAttackBounds.set(
+            attackBounds.left - gap - attack,
+            bottom - attack,
+            attackBounds.left - gap,
+            bottom
+        )
     }
 
     fun restartBounds(width: Int, height: Int): RectF {
@@ -99,6 +116,7 @@ class AndroidTouchInputMapper {
     }
 
     val attackBounds = RectF()
+    val specialAttackBounds = RectF()
     val joystickTouchBounds = RectF()
     var joystickBaseX = 0f
         private set

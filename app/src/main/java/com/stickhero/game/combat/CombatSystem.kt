@@ -8,16 +8,21 @@ import com.stickhero.game.input.GameCommand
 import com.stickhero.game.input.InputState
 import com.stickhero.game.physics.Vec2
 
-class CombatSystem(private val defaultAttack: AttackDefinition) {
-    fun update(attacker: Fighter, target: Fighter, commands: InputState, deltaSeconds: Float): List<DamageEvent> {
+class CombatSystem(
+    private val defaultAttack: AttackDefinition,
+    private val specialAttack: AttackDefinition
+) {
+    fun update(attacker: Fighter, target: Fighter?, commands: InputState, deltaSeconds: Float): List<DamageEvent> {
         if (!attacker.isAlive()) return emptyList()
         updateHitstun(attacker, deltaSeconds)
         maybeStartAttack(attacker, commands)
         val attack = attacker.runtime.activeAttack ?: return emptyList()
         attack.elapsed += deltaSeconds
+        attack.visualElapsed += deltaSeconds
+        holdActivePhase(attack, commands)
 
         val events = mutableListOf<DamageEvent>()
-        if (attack.isActive && target.isAlive() && target.id !in attack.hitTargets && inRange(attacker, target, attack.definition.range)) {
+        if (target != null && attack.isActive && target.isAlive() && target.id !in attack.hitTargets && inRange(attacker, target, attack.definition.range)) {
             attack.hitTargets += target.id
             events += DamageEvent(
                 attacker.id,
@@ -53,13 +58,27 @@ class CombatSystem(private val defaultAttack: AttackDefinition) {
     }
 
     private fun maybeStartAttack(fighter: Fighter, commands: InputState) {
-        if (!commands.has(GameCommand.Attack)) return
+        val definition = when {
+            commands.has(GameCommand.SpecialAttack) -> specialAttack
+            commands.has(GameCommand.Attack) -> defaultAttack
+            else -> return
+        }
         if (fighter.runtime.activeAttack != null) return
         if (fighter.runtime.hitstunRemaining > 0f || fighter.runtime.state == FighterState.Knockout) return
-        fighter.runtime.activeAttack = ActiveAttack(defaultAttack)
+        fighter.runtime.activeAttack = ActiveAttack(definition)
         fighter.runtime.state = FighterState.Attack
         fighter.runtime.animationTime = 0f
-        fighter.runtime.animationClipId = defaultAttack.animationClipId
+        fighter.runtime.animationClipId = definition.animationClipId
+    }
+
+    private fun holdActivePhase(attack: ActiveAttack, commands: InputState) {
+        val holdCommand = attack.definition.holdActiveCommand ?: return
+        if (!commands.has(holdCommand)) return
+        val activeStart = attack.definition.startupDuration
+        val activeEnd = activeStart + attack.definition.activeDuration
+        if (attack.elapsed in activeStart..activeEnd) {
+            attack.elapsed = activeStart + attack.definition.activeDuration * 0.5f
+        }
     }
 
     private fun updateHitstun(fighter: Fighter, deltaSeconds: Float) {

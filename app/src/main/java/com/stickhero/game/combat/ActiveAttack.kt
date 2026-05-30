@@ -5,6 +5,7 @@ import com.stickhero.game.fighter.FighterId
 data class ActiveAttack(
     val definition: AttackDefinition,
     var elapsed: Float = 0f,
+    var visualElapsed: Float = 0f,
     val hitTargets: MutableSet<FighterId> = mutableSetOf()
 ) {
     val isActive: Boolean

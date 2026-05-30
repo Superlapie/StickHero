@@ -6,8 +6,9 @@ import com.stickhero.game.fighter.Fighter
 import com.stickhero.game.renderstate.ImpactEffectRenderModel
 
 data class GameWorld(
+    val mode: GameMode,
     val player: Fighter,
-    val enemy: Fighter,
+    val enemy: Fighter?,
     var phase: GamePhase = GamePhase.Playing,
     var hitstopRemaining: Float = 0f,
     var cameraShakeRemaining: Float = 0f,
@@ -17,10 +18,15 @@ data class GameWorld(
     companion object {
         fun create(config: GameConfig): GameWorld {
             val player = FighterCatalog.player(260f, config.stageBounds.groundY)
-            val enemy = FighterCatalog.enemy(980f, config.stageBounds.groundY)
+            val enemy = if (config.mode == GameMode.Normal) {
+                FighterCatalog.enemy(980f, config.stageBounds.groundY).also {
+                    it.runtime.facing = FacingDirection.Left
+                }
+            } else {
+                null
+            }
             player.runtime.facing = FacingDirection.Right
-            enemy.runtime.facing = FacingDirection.Left
-            return GameWorld(player, enemy)
+            return GameWorld(config.mode, player, enemy)
         }
     }
 }

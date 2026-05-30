@@ -22,7 +22,7 @@ class StickHeroGame(private val config: GameConfig) {
         return snapshot()
     }
 
-    private fun restart() {
+    fun restart() {
         world = GameWorld.create(config)
         matchController = MatchController(config)
     }
@@ -30,13 +30,18 @@ class StickHeroGame(private val config: GameConfig) {
     private fun snapshot(): RenderSnapshot {
         return RenderSnapshot(
             phase = world.phase,
-            fighters = listOf(world.player.toRenderModel(), world.enemy.toRenderModel()),
+            fighters = buildList {
+                add(world.player.toRenderModel())
+                world.enemy?.let { add(it.toRenderModel()) }
+            },
             hud = HudRenderModel(
                 playerHealthFraction = world.player.runtime.health.toFloat() / world.player.stats.maxHealth,
-                enemyHealthFraction = world.enemy.runtime.health.toFloat() / world.enemy.stats.maxHealth
+                enemyHealthFraction = world.enemy?.let { it.runtime.health.toFloat() / it.stats.maxHealth },
+                mode = config.mode
             ),
             impacts = world.impactEffects.toList(),
-            camera = cameraSnapshot()
+            camera = cameraSnapshot(),
+            mode = config.mode
         )
     }
 
@@ -55,16 +60,19 @@ class StickHeroGame(private val config: GameConfig) {
         isAttacking = runtime.activeAttack != null,
         isHurt = runtime.state == FighterState.Hurt,
         pose = FighterPoseRenderModel(
-            pose = runtime.pose,
+            frame = runtime.frame,
             clipId = runtime.animationClipId,
-            attackPhase = runtime.activeAttack?.phaseName()
+            attackPhase = runtime.activeAttack?.phaseName(),
+            attackElapsedSeconds = runtime.activeAttack?.elapsed ?: 0f,
+            attackVisualElapsedSeconds = runtime.activeAttack?.visualElapsed ?: runtime.animationTime
         ),
         motionTrail = runtime.motionTrail.toList()
     )
 
     private fun cameraSnapshot(): CameraRenderState {
         if (world.cameraShakeRemaining <= 0f) return CameraRenderState()
-        val time = world.player.runtime.animationTime + world.enemy.runtime.animationTime
+        val enemyTime = world.enemy?.runtime?.animationTime ?: 0f
+        val time = world.player.runtime.animationTime + enemyTime
         val strength = world.cameraShakeStrength * (world.cameraShakeRemaining / 0.12f).coerceIn(0f, 1f)
         return CameraRenderState(
             offsetX = sin(time * 91f) * strength,

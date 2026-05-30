@@ -4,13 +4,12 @@ import android.content.Context
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import com.stickhero.game.core.GameConfig
-import com.stickhero.game.core.StickHeroGame
+import com.stickhero.game.core.GameMode
 
 class GameSurfaceView(context: Context) : SurfaceView(context), SurfaceHolder.Callback {
-    private val game = StickHeroGame(GameConfig.default())
+    private val app = StickHeroApp()
     private val inputMapper = AndroidTouchInputMapper()
-    private val renderer = CanvasGameRenderer(inputMapper)
+    private val renderer = CanvasGameRenderer(context, inputMapper)
     private var gameLoop: AndroidGameLoop? = null
     private var hasSurface = false
 
@@ -32,6 +31,23 @@ class GameSurfaceView(context: Context) : SurfaceView(context), SurfaceHolder.Ca
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (app.isMenu()) {
+            if (event.actionMasked == MotionEvent.ACTION_UP) {
+                val x = event.x
+                val y = event.y
+                when {
+                    MenuLayout.startBounds(width, height).contains(x, y) -> {
+                        app.start(GameMode.Normal)
+                        inputMapper.reset()
+                    }
+                    MenuLayout.debugBounds(width, height).contains(x, y) -> {
+                        app.start(GameMode.DebugSandbox)
+                        inputMapper.reset()
+                    }
+                }
+            }
+            return true
+        }
         inputMapper.onTouch(event, width, height)
         return true
     }
@@ -46,7 +62,7 @@ class GameSurfaceView(context: Context) : SurfaceView(context), SurfaceHolder.Ca
 
     private fun startLoop() {
         if (gameLoop != null) return
-        gameLoop = AndroidGameLoop(holder, game, renderer) { inputMapper.currentInput() }
+        gameLoop = AndroidGameLoop(holder, app, renderer) { inputMapper.currentInput() }
         gameLoop?.startLoop()
     }
 

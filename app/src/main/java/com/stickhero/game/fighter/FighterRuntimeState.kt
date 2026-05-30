@@ -1,8 +1,9 @@
 package com.stickhero.game.fighter
 
 import com.stickhero.game.combat.ActiveAttack
-import com.stickhero.game.animation.Pose
 import com.stickhero.game.animation.PoseLibrary
+import com.stickhero.game.animation.StickAnimationLibrary
+import com.stickhero.game.animation.StickFrame
 import com.stickhero.game.physics.Vec2
 import com.stickhero.game.renderstate.MotionTrailPoint
 
@@ -18,6 +19,6 @@ data class FighterRuntimeState(
     var activeAttack: ActiveAttack? = null,
     var animationTime: Float = 0f,
     var animationClipId: String = PoseLibrary.IDLE_BREATHE,
-    var pose: Pose = PoseLibrary.basePose(),
+    var frame: StickFrame = StickAnimationLibrary.combatGuardFrame(),
     val motionTrail: MutableList<MotionTrailPoint> = mutableListOf()
 )

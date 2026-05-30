@@ -1,13 +1,12 @@
 package com.stickhero.platform.android
 
 import android.view.SurfaceHolder
-import com.stickhero.game.core.StickHeroGame
 import com.stickhero.game.input.InputState
 import com.stickhero.game.util.Time
 
 class AndroidGameLoop(
     private val holder: SurfaceHolder,
-    private val game: StickHeroGame,
+    private val app: StickHeroApp,
     private val renderer: CanvasGameRenderer,
     private val inputProvider: () -> InputState
 ) : Thread("StickHeroGameLoop") {
@@ -31,11 +30,11 @@ class AndroidGameLoop(
             val delta = Time.secondsFromNanos(now - lastNanos).coerceAtMost(0.05f)
             lastNanos = now
 
-            val snapshot = game.update(delta, inputProvider())
+            val frame = app.update(delta, inputProvider())
             val canvas = holder.lockCanvas()
             if (canvas != null) {
                 try {
-                    renderer.draw(canvas, snapshot)
+                    renderer.draw(canvas, frame)
                 } finally {
                     holder.unlockCanvasAndPost(canvas)
                 }

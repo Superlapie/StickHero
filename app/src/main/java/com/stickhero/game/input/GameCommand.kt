@@ -6,5 +6,6 @@ enum class GameCommand {
     Jump,
     Crouch,
     Attack,
+    SpecialAttack,
     Restart
 }

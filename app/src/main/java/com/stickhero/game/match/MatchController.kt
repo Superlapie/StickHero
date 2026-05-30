@@ -4,6 +4,7 @@ import com.stickhero.game.ai.BasicEnemyAI
 import com.stickhero.game.animation.FighterAnimationController
 import com.stickhero.game.combat.CombatSystem
 import com.stickhero.game.core.GameConfig
+import com.stickhero.game.core.GameMode
 import com.stickhero.game.core.GamePhase
 import com.stickhero.game.core.GameWorld
 import com.stickhero.game.fighter.FacingDirection
@@ -17,42 +18,58 @@ import kotlin.math.max
 
 class MatchController(private val config: GameConfig) {
     private val movementSystem = MovementSystem(config.stageBounds)
-    private val combatSystem = CombatSystem(config.defaultAttack)
+    private val combatSystem = CombatSystem(config.defaultAttack, config.specialAttack)
     private val animationController = FighterAnimationController()
     private val winConditionSystem = WinConditionSystem()
     private val enemyAI = BasicEnemyAI(config.defaultAttack.range)
 
     fun update(world: GameWorld, playerInput: InputState, deltaSeconds: Float) {
         if (world.phase != GamePhase.Playing) return
-
-        updateFacing(world.player, world.enemy)
-        val enemyInput = enemyAI.decide(world.enemy, world.player).inputState
         updateEffects(world, deltaSeconds)
+
+        val enemy = world.enemy
+        if (world.mode == GameMode.DebugSandbox || enemy == null) {
+            if (world.hitstopRemaining > 0f) {
+                world.hitstopRemaining = (world.hitstopRemaining - deltaSeconds).coerceAtLeast(0f)
+                val slowedDelta = deltaSeconds * 0.08f
+                animationController.update(world.player, abs(playerInput.horizontalAxis()) > 0.08f, playerInput.wantsCrouch(), slowedDelta)
+                return
+            }
+
+            movementSystem.update(world.player, playerInput, deltaSeconds)
+            combatSystem.update(world.player, null, playerInput, deltaSeconds)
+            animationController.update(world.player, abs(playerInput.horizontalAxis()) > 0.08f, playerInput.wantsCrouch(), deltaSeconds)
+            winConditionSystem.update(world)
+            return
+        }
+
+        updateFacing(world.player, enemy)
+        val enemyInput = enemyAI.decide(enemy, world.player).inputState
 
         if (world.hitstopRemaining > 0f) {
             world.hitstopRemaining = (world.hitstopRemaining - deltaSeconds).coerceAtLeast(0f)
             val slowedDelta = deltaSeconds * 0.08f
             animationController.update(world.player, abs(playerInput.horizontalAxis()) > 0.08f, playerInput.wantsCrouch(), slowedDelta)
-            animationController.update(world.enemy, abs(enemyInput.horizontalAxis()) > 0.08f, enemyInput.wantsCrouch(), slowedDelta)
+            animationController.update(enemy, abs(enemyInput.horizontalAxis()) > 0.08f, enemyInput.wantsCrouch(), slowedDelta)
             return
         }
 
         movementSystem.update(world.player, playerInput, deltaSeconds)
-        movementSystem.update(world.enemy, enemyInput, deltaSeconds)
+        movementSystem.update(enemy, enemyInput, deltaSeconds)
 
-        val playerHits = combatSystem.update(world.player, world.enemy, playerInput, deltaSeconds)
-        val enemyHits = combatSystem.update(world.enemy, world.player, enemyInput, deltaSeconds)
+        val playerHits = combatSystem.update(world.player, enemy, playerInput, deltaSeconds)
+        val enemyHits = combatSystem.update(enemy, world.player, enemyInput, deltaSeconds)
         playerHits.forEach {
-            combatSystem.applyDamage(world.player, world.enemy, it)
-            registerImpact(world, world.player, world.enemy, it.hitstopDuration, it.impactShake)
+            combatSystem.applyDamage(world.player, enemy, it)
+            registerImpact(world, world.player, enemy, it.hitstopDuration, it.impactShake)
         }
         enemyHits.forEach {
-            combatSystem.applyDamage(world.enemy, world.player, it)
-            registerImpact(world, world.enemy, world.player, it.hitstopDuration, it.impactShake)
+            combatSystem.applyDamage(enemy, world.player, it)
+            registerImpact(world, enemy, world.player, it.hitstopDuration, it.impactShake)
         }
 
         animationController.update(world.player, abs(playerInput.horizontalAxis()) > 0.08f, playerInput.wantsCrouch(), deltaSeconds)
-        animationController.update(world.enemy, abs(enemyInput.horizontalAxis()) > 0.08f, enemyInput.wantsCrouch(), deltaSeconds)
+        animationController.update(enemy, abs(enemyInput.horizontalAxis()) > 0.08f, enemyInput.wantsCrouch(), deltaSeconds)
         winConditionSystem.update(world)
     }
 
@@ -79,7 +96,8 @@ class MatchController(private val config: GameConfig) {
         }
     }
 
-    private fun updateFacing(left: Fighter, right: Fighter) {
+    private fun updateFacing(left: Fighter, right: Fighter?) {
+        if (right == null) return
         left.runtime.facing = if (right.position.x >= left.position.x) FacingDirection.Right else FacingDirection.Left
         right.runtime.facing = if (left.position.x >= right.position.x) FacingDirection.Right else FacingDirection.Left
     }
