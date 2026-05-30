@@ -7,5 +7,9 @@ enum class GameCommand {
     Crouch,
     Attack,
     SpecialAttack,
+    EarthSmash,
+    BladeFlurry,
+    ElectroPulse,
+    FlameBurst,
     Restart
 }

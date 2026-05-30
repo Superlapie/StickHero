@@ -30,6 +30,10 @@ FILES = {
     "VFXKameMid.png": "VFXKameMid",
     "VFXKameStart.png": "VFXKameStart",
     "Walk-.png": "Walk",
+    "EarthSmash.png": "EarthSmash",
+    "BladeFlurry.png": "BladeFlurry",
+    "ElectroPulse.png": "ElectroPulse",
+    "FlameBurst.png": "FlameBurst",
 }
 
 PNG_FILES = {
@@ -38,33 +42,48 @@ PNG_FILES = {
     "VFXKameImpact",
     "VFXKameMid",
     "VFXKameStart",
+    "ElectroPulse",
+    "FlameBurst",
 }
 
 
 def main():
     DEST.mkdir(parents=True, exist_ok=True)
-    for old in DEST.glob("*.png"):
-        old.unlink()
-    for old in DEST.glob("*.jpg"):
-        old.unlink()
 
     total_source = 0
     total_dest = 0
+    prepared = 0
+    skipped = 0
     for source_name, dest_name in FILES.items():
         source = SOURCE / source_name
         total_source += source.stat().st_size
         if dest_name in PNG_FILES:
             dest = DEST / f"{dest_name}.png"
+            if is_prepared(source, dest):
+                skipped += 1
+                total_dest += dest.stat().st_size
+                print(f"{source.name} -> {dest.name}: skipped")
+                continue
             with Image.open(source) as image:
                 image.save(dest, format="PNG", optimize=True, compress_level=9)
         else:
             dest = DEST / f"{dest_name}.jpg"
+            if is_prepared(source, dest):
+                skipped += 1
+                total_dest += dest.stat().st_size
+                print(f"{source.name} -> {dest.name}: skipped")
+                continue
             with Image.open(source) as image:
                 image.convert("RGB").save(dest, format="JPEG", quality=QUALITY, optimize=True, progressive=True)
+        prepared += 1
         total_dest += dest.stat().st_size
         print(f"{source.name} -> {dest.name}: {source.stat().st_size} -> {dest.stat().st_size}")
 
-    print(f"total: {total_source} -> {total_dest}, saved {total_source - total_dest}")
+    print(f"prepared={prepared} skipped={skipped} total: {total_source} -> {total_dest}, saved {total_source - total_dest}")
+
+
+def is_prepared(source: Path, dest: Path) -> bool:
+    return dest.exists() and dest.stat().st_mtime >= source.stat().st_mtime
 
 
 if __name__ == "__main__":

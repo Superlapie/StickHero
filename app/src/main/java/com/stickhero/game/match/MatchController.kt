@@ -18,7 +18,7 @@ import kotlin.math.max
 
 class MatchController(private val config: GameConfig) {
     private val movementSystem = MovementSystem(config.stageBounds)
-    private val combatSystem = CombatSystem(config.defaultAttack, config.specialAttack)
+    private val combatSystem = CombatSystem(config.defaultAttack, config.specialAttacks)
     private val animationController = FighterAnimationController()
     private val winConditionSystem = WinConditionSystem()
     private val enemyAI = BasicEnemyAI(config.defaultAttack.range)

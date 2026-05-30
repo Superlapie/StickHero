@@ -78,7 +78,11 @@ class CanvasGameRenderer(
 
     private fun drawControls(canvas: Canvas) {
         drawJoystick(canvas)
-        drawButton(canvas, inputMapper.specialAttackBounds, "SP")
+        drawButton(canvas, inputMapper.electroPulseBounds, "EP")
+        drawButton(canvas, inputMapper.bladeFlurryBounds, "BF")
+        drawButton(canvas, inputMapper.flameBurstBounds, "FB")
+        drawButton(canvas, inputMapper.earthSmashBounds, "ES")
+        drawButton(canvas, inputMapper.specialAttackBounds, "KM")
         drawButton(canvas, inputMapper.attackBounds, "ATK")
     }
 

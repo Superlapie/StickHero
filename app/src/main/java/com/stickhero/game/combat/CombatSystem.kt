@@ -10,7 +10,7 @@ import com.stickhero.game.physics.Vec2
 
 class CombatSystem(
     private val defaultAttack: AttackDefinition,
-    private val specialAttack: AttackDefinition
+    private val specialAttacks: Map<GameCommand, AttackDefinition>
 ) {
     fun update(attacker: Fighter, target: Fighter?, commands: InputState, deltaSeconds: Float): List<DamageEvent> {
         if (!attacker.isAlive()) return emptyList()
@@ -59,7 +59,8 @@ class CombatSystem(
 
     private fun maybeStartAttack(fighter: Fighter, commands: InputState) {
         val definition = when {
-            commands.has(GameCommand.SpecialAttack) -> specialAttack
+            specialAttacks.any { (command, _) -> commands.has(command) } ->
+                specialAttacks.entries.first { (command, _) -> commands.has(command) }.value
             commands.has(GameCommand.Attack) -> defaultAttack
             else -> return
         }

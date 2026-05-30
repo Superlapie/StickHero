@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 class CombatSystemTest {
     @Test
     fun attackOnlyHitsTargetOnce() {
-        val combatSystem = CombatSystem(AttackCatalog.basicPunch, AttackCatalog.kamehameha)
+        val combatSystem = CombatSystem(AttackCatalog.basicPunch, AttackCatalog.playerSpecials)
         val player = FighterCatalog.player(100f, 520f)
         val enemy = FighterCatalog.enemy(150f, 520f)
         val attackInput = InputState(setOf(GameCommand.Attack))
@@ -24,7 +24,7 @@ class CombatSystemTest {
 
     @Test
     fun recoveryBlocksImmediateSecondAttack() {
-        val combatSystem = CombatSystem(AttackCatalog.basicPunch, AttackCatalog.kamehameha)
+        val combatSystem = CombatSystem(AttackCatalog.basicPunch, AttackCatalog.playerSpecials)
         val player = FighterCatalog.player(100f, 520f)
         val enemy = FighterCatalog.enemy(150f, 520f)
         val attackInput = InputState(setOf(GameCommand.Attack))

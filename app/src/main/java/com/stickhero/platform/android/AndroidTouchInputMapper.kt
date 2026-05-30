@@ -67,6 +67,10 @@ class AndroidTouchInputMapper {
         for ((x, y) in activePointers.values) {
             if (attackBounds.contains(x, y)) commands += GameCommand.Attack
             if (specialAttackBounds.contains(x, y)) commands += GameCommand.SpecialAttack
+            if (earthSmashBounds.contains(x, y)) commands += GameCommand.EarthSmash
+            if (bladeFlurryBounds.contains(x, y)) commands += GameCommand.BladeFlurry
+            if (electroPulseBounds.contains(x, y)) commands += GameCommand.ElectroPulse
+            if (flameBurstBounds.contains(x, y)) commands += GameCommand.FlameBurst
         }
         if (restartPressed) {
             commands += GameCommand.Restart
@@ -98,15 +102,18 @@ class AndroidTouchInputMapper {
             joystickBaseX + stickRadius * 1.55f,
             joystickBaseY + stickRadius * 1.55f
         )
-        val attack = height * 0.19f
-        val gap = height * 0.025f
-        attackBounds.set(width - margin - attack, bottom - attack, width - margin, bottom)
-        specialAttackBounds.set(
-            attackBounds.left - gap - attack,
-            bottom - attack,
-            attackBounds.left - gap,
-            bottom
-        )
+        val action = height * 0.112f
+        val gap = height * 0.018f
+        val right = width - margin
+        val rowBottom = bottom
+        attackBounds.set(right - action, rowBottom - action, right, rowBottom)
+        specialAttackBounds.set(attackBounds.left - gap - action, rowBottom - action, attackBounds.left - gap, rowBottom)
+        earthSmashBounds.set(specialAttackBounds.left - gap - action, rowBottom - action, specialAttackBounds.left - gap, rowBottom)
+
+        val topRowBottom = rowBottom - action - gap
+        flameBurstBounds.set(right - action, topRowBottom - action, right, topRowBottom)
+        bladeFlurryBounds.set(flameBurstBounds.left - gap - action, topRowBottom - action, flameBurstBounds.left - gap, topRowBottom)
+        electroPulseBounds.set(bladeFlurryBounds.left - gap - action, topRowBottom - action, bladeFlurryBounds.left - gap, topRowBottom)
     }
 
     fun restartBounds(width: Int, height: Int): RectF {
@@ -117,6 +124,10 @@ class AndroidTouchInputMapper {
 
     val attackBounds = RectF()
     val specialAttackBounds = RectF()
+    val earthSmashBounds = RectF()
+    val bladeFlurryBounds = RectF()
+    val electroPulseBounds = RectF()
+    val flameBurstBounds = RectF()
     val joystickTouchBounds = RectF()
     var joystickBaseX = 0f
         private set

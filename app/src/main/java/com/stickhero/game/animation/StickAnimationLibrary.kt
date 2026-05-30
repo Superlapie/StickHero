@@ -9,6 +9,10 @@ object StickAnimationLibrary {
     const val JAB = "jab"
     const val CROSS = "cross"
     const val HEAVY_PUNCH = "heavy_punch"
+    const val EARTH_SMASH = "earth_smash"
+    const val BLADE_FLURRY = "blade_flurry"
+    const val ELECTRO_PULSE = "electro_pulse"
+    const val FLAME_BURST = "flame_burst"
     const val HURT_LIGHT = "hurt_light"
     const val HURT_HEAVY = "hurt_heavy"
     const val KNOCKOUT = "knockout"
@@ -24,6 +28,10 @@ object StickAnimationLibrary {
         jab(),
         cross(),
         heavyPunch(),
+        specialClip(EARTH_SMASH, 0.92f),
+        specialClip(BLADE_FLURRY, 1.80f),
+        specialClip(ELECTRO_PULSE, 1.28f),
+        specialClip(FLAME_BURST, 1.45f),
         hurtLight(),
         hurtHeavy(),
         knockout()
@@ -602,6 +610,19 @@ object StickAnimationLibrary {
             StickAnimationFrame(0.32f, heavyImpactFrame(), Easing.EaseOut),
             StickAnimationFrame(0.46f, heavyRecoverFrame(), Easing.EaseOut),
             StickAnimationFrame(0.72f, combatGuardFrame(), Easing.EaseOut)
+        )
+    )
+
+    private fun specialClip(id: String, durationSeconds: Float) = StickAnimationClip(
+        id = id,
+        durationSeconds = durationSeconds,
+        looping = false,
+        frames = listOf(
+            StickAnimationFrame(0f, combatGuardFrame(), Easing.EaseIn),
+            StickAnimationFrame(durationSeconds * 0.20f, heavyLoadFrame(), Easing.Snap),
+            StickAnimationFrame(durationSeconds * 0.42f, heavyDriveFrame(), Easing.Linear),
+            StickAnimationFrame(durationSeconds * 0.66f, heavyImpactFrame(), Easing.EaseOut),
+            StickAnimationFrame(durationSeconds, combatGuardFrame(), Easing.EaseOut)
         )
     )
 

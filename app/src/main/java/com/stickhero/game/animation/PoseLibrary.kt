@@ -10,6 +10,10 @@ object PoseLibrary {
     const val JAB = StickAnimationLibrary.JAB
     const val CROSS = StickAnimationLibrary.CROSS
     const val HEAVY_PUNCH = StickAnimationLibrary.HEAVY_PUNCH
+    const val EARTH_SMASH = StickAnimationLibrary.EARTH_SMASH
+    const val BLADE_FLURRY = StickAnimationLibrary.BLADE_FLURRY
+    const val ELECTRO_PULSE = StickAnimationLibrary.ELECTRO_PULSE
+    const val FLAME_BURST = StickAnimationLibrary.FLAME_BURST
     const val HURT_LIGHT = StickAnimationLibrary.HURT_LIGHT
     const val HURT_HEAVY = StickAnimationLibrary.HURT_HEAVY
     const val KNOCKOUT = StickAnimationLibrary.KNOCKOUT

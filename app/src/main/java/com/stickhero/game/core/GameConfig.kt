@@ -3,6 +3,7 @@ package com.stickhero.game.core
 import com.stickhero.game.combat.AttackDefinition
 import com.stickhero.game.config.AttackCatalog
 import com.stickhero.game.config.StageCatalog
+import com.stickhero.game.input.GameCommand
 import com.stickhero.game.physics.Bounds
 
 data class GameConfig(
@@ -10,7 +11,7 @@ data class GameConfig(
     val worldHeight: Float,
     val stageBounds: Bounds,
     val defaultAttack: AttackDefinition,
-    val specialAttack: AttackDefinition,
+    val specialAttacks: Map<GameCommand, AttackDefinition>,
     val mode: GameMode
 ) {
     companion object {
@@ -19,7 +20,7 @@ data class GameConfig(
             worldHeight = 720f,
             stageBounds = StageCatalog.prototypeStage,
             defaultAttack = AttackCatalog.basicPunch,
-            specialAttack = AttackCatalog.kamehameha,
+            specialAttacks = AttackCatalog.playerSpecials,
             mode = mode
         )
     }
