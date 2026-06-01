@@ -3,7 +3,6 @@ package com.stickhero.game.core
 import com.stickhero.game.config.FighterCatalog
 import com.stickhero.game.fighter.FacingDirection
 import com.stickhero.game.fighter.Fighter
-import com.stickhero.game.renderstate.ImpactEffectRenderModel
 
 data class GameWorld(
     val mode: GameMode,
@@ -12,8 +11,7 @@ data class GameWorld(
     var phase: GamePhase = GamePhase.Playing,
     var hitstopRemaining: Float = 0f,
     var cameraShakeRemaining: Float = 0f,
-    var cameraShakeStrength: Float = 0f,
-    val impactEffects: MutableList<ImpactEffectRenderModel> = mutableListOf()
+    var cameraShakeStrength: Float = 0f
 ) {
     companion object {
         fun create(config: GameConfig): GameWorld {

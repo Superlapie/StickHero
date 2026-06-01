@@ -10,7 +10,7 @@ class FighterAnimationController(
 ) {
     fun update(fighter: Fighter, moving: Boolean, crouching: Boolean, deltaSeconds: Float) {
         ageMotionTrail(fighter, deltaSeconds)
-        if (fighter.runtime.activeAttack == null && fighter.runtime.hitstunRemaining <= 0f) {
+        if (fighter.runtime.activeAttack == null && fighter.runtime.flashStep == null && fighter.runtime.hitstunRemaining <= 0f) {
             fighter.runtime.state = when {
                 fighter.runtime.state == FighterState.Knockout -> FighterState.Knockout
                 !fighter.runtime.isGrounded -> FighterState.Jump
@@ -31,11 +31,13 @@ class FighterAnimationController(
     }
 
     private fun desiredClipId(fighter: Fighter): String {
+        fighter.runtime.flashStep?.let { return PoseLibrary.FLASH_STEP }
         fighter.runtime.activeAttack?.let { return it.definition.animationClipId }
         return when (fighter.runtime.state) {
             FighterState.Walk -> movementClipId(fighter)
             FighterState.Jump -> PoseLibrary.JUMP
             FighterState.Crouch -> PoseLibrary.CROUCH
+            FighterState.FlashStep -> PoseLibrary.FLASH_STEP
             FighterState.Attack -> fighter.runtime.animationClipId
             FighterState.Hurt -> fighter.runtime.animationClipId
             FighterState.Knockout -> PoseLibrary.KNOCKOUT

@@ -54,6 +54,7 @@ class SpriteSheetFighterRenderer(
             PoseLibrary.BLADE_FLURRY -> SheetSelection("BladeFlurry", fighter.animationTime)
             PoseLibrary.ELECTRO_PULSE -> SheetSelection("ElectroPulse", fighter.animationTime)
             PoseLibrary.FLAME_BURST -> SheetSelection("FlameBurst", fighter.animationTime)
+            PoseLibrary.FLASH_STEP -> SheetSelection("FlashStep", fighter.animationTime)
             else -> SheetSelection("Idlespritesheet", fighter.animationTime)
         }
 
@@ -273,6 +274,7 @@ private class SpriteAssetLibrary(context: Context) {
             SheetSpec("BladeFlurry", 8, 4, AttackCatalog.bladeFlurry.totalDuration, false, 0.50f),
             SheetSpec("ElectroPulse", 4, 4, AttackCatalog.electroPulse.totalDuration, false, 0.50f),
             SheetSpec("FlameBurst", 8, 4, AttackCatalog.flameBurst.totalDuration, false, 0.50f),
+            SheetSpec("FlashStep", 4, 4, 0.52f, false, 0.50f),
             SheetSpec("VFXKameCharge", 4, 2, 0.72f, true, 0.58f),
             SheetSpec("VFXKameStart", 4, 2, 0.45f, true, 0.58f),
             SheetSpec("VFXKameMid", 4, 2, 0.54f, true, 0.58f),

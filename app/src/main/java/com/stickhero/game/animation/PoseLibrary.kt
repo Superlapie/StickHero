@@ -14,6 +14,7 @@ object PoseLibrary {
     const val BLADE_FLURRY = StickAnimationLibrary.BLADE_FLURRY
     const val ELECTRO_PULSE = StickAnimationLibrary.ELECTRO_PULSE
     const val FLAME_BURST = StickAnimationLibrary.FLAME_BURST
+    const val FLASH_STEP = StickAnimationLibrary.FLASH_STEP
     const val HURT_LIGHT = StickAnimationLibrary.HURT_LIGHT
     const val HURT_HEAVY = StickAnimationLibrary.HURT_HEAVY
     const val KNOCKOUT = StickAnimationLibrary.KNOCKOUT

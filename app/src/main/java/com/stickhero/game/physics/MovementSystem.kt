@@ -8,7 +8,10 @@ import kotlin.math.abs
 class MovementSystem(private val bounds: Bounds) {
     fun update(fighter: Fighter, input: InputState, deltaSeconds: Float) {
         if (fighter.runtime.state == FighterState.Knockout) return
-        val canMove = fighter.runtime.state != FighterState.Attack && fighter.runtime.state != FighterState.Hurt
+        val canMove = fighter.runtime.state != FighterState.Attack &&
+            fighter.runtime.state != FighterState.Hurt &&
+            fighter.runtime.state != FighterState.FlashStep &&
+            fighter.runtime.flashStep == null
         val crouching = fighter.runtime.isGrounded && input.wantsCrouch() && canMove
         fighter.runtime.crouchAmount = approach(fighter.runtime.crouchAmount, if (crouching) 1f else 0f, deltaSeconds * 9f)
 

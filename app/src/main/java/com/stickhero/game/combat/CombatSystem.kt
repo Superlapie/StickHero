@@ -31,7 +31,8 @@ class CombatSystem(
                 attack.definition.knockback,
                 attack.definition.hitstunDuration,
                 attack.definition.hitstopDuration,
-                attack.definition.impactShake
+                attack.definition.impactShake,
+                attack.definition.showImpactEffect
             )
         }
         if (attack.isFinished) {
@@ -65,6 +66,7 @@ class CombatSystem(
             else -> return
         }
         if (fighter.runtime.activeAttack != null) return
+        if (fighter.runtime.flashStep != null) return
         if (fighter.runtime.hitstunRemaining > 0f || fighter.runtime.state == FighterState.Knockout) return
         fighter.runtime.activeAttack = ActiveAttack(definition)
         fighter.runtime.state = FighterState.Attack

@@ -39,7 +39,6 @@ class StickHeroGame(private val config: GameConfig) {
                 enemyHealthFraction = world.enemy?.let { it.runtime.health.toFloat() / it.stats.maxHealth },
                 mode = config.mode
             ),
-            impacts = world.impactEffects.toList(),
             camera = cameraSnapshot(),
             mode = config.mode
         )

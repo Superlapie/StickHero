@@ -5,6 +5,7 @@ enum class FighterState {
     Walk,
     Jump,
     Crouch,
+    FlashStep,
     Attack,
     Hurt,
     Knockout

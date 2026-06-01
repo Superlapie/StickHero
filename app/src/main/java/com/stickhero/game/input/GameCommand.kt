@@ -11,5 +11,6 @@ enum class GameCommand {
     BladeFlurry,
     ElectroPulse,
     FlameBurst,
+    FlashStep,
     Restart
 }

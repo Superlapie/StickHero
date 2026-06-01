@@ -13,6 +13,7 @@ object StickAnimationLibrary {
     const val BLADE_FLURRY = "blade_flurry"
     const val ELECTRO_PULSE = "electro_pulse"
     const val FLAME_BURST = "flame_burst"
+    const val FLASH_STEP = "flash_step"
     const val HURT_LIGHT = "hurt_light"
     const val HURT_HEAVY = "hurt_heavy"
     const val KNOCKOUT = "knockout"
@@ -32,6 +33,7 @@ object StickAnimationLibrary {
         specialClip(BLADE_FLURRY, 1.80f),
         specialClip(ELECTRO_PULSE, 1.28f),
         specialClip(FLAME_BURST, 1.45f),
+        specialClip(FLASH_STEP, 0.52f),
         hurtLight(),
         hurtHeavy(),
         knockout()

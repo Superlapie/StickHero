@@ -17,7 +17,8 @@ object AttackCatalog {
         knockback = Knockback(horizontal = 150f),
         hitstunDuration = 0.22f,
         hitstopDuration = 0.042f,
-        impactShake = 0.45f
+        impactShake = 0.45f,
+        showImpactEffect = true
     )
 
     val heavyPunch = AttackDefinition(
@@ -31,7 +32,8 @@ object AttackCatalog {
         knockback = Knockback(horizontal = 230f, vertical = -90f),
         hitstunDuration = 0.34f,
         hitstopDuration = 0.07f,
-        impactShake = 1f
+        impactShake = 1f,
+        showImpactEffect = false
     )
 
     val kamehameha = AttackDefinition(
@@ -46,6 +48,7 @@ object AttackCatalog {
         hitstunDuration = 0.42f,
         hitstopDuration = 0.04f,
         impactShake = 1.2f,
+        showImpactEffect = false,
         holdActiveCommand = GameCommand.SpecialAttack
     )
 
@@ -60,7 +63,8 @@ object AttackCatalog {
         knockback = Knockback(horizontal = 260f, vertical = -150f),
         hitstunDuration = 0.38f,
         hitstopDuration = 0.07f,
-        impactShake = 1.1f
+        impactShake = 1.1f,
+        showImpactEffect = false
     )
 
     val bladeFlurry = AttackDefinition(
@@ -74,7 +78,8 @@ object AttackCatalog {
         knockback = Knockback(horizontal = 210f, vertical = -60f),
         hitstunDuration = 0.34f,
         hitstopDuration = 0.045f,
-        impactShake = 0.85f
+        impactShake = 0.85f,
+        showImpactEffect = false
     )
 
     val electroPulse = AttackDefinition(
@@ -88,7 +93,8 @@ object AttackCatalog {
         knockback = Knockback(horizontal = 180f, vertical = -110f),
         hitstunDuration = 0.40f,
         hitstopDuration = 0.055f,
-        impactShake = 0.95f
+        impactShake = 0.95f,
+        showImpactEffect = false
     )
 
     val flameBurst = AttackDefinition(
@@ -102,7 +108,8 @@ object AttackCatalog {
         knockback = Knockback(horizontal = 240f, vertical = -130f),
         hitstunDuration = 0.42f,
         hitstopDuration = 0.06f,
-        impactShake = 1.05f
+        impactShake = 1.05f,
+        showImpactEffect = false
     )
 
     val playerSpecials = linkedMapOf(

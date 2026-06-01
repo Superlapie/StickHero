@@ -17,6 +17,7 @@ data class FighterRuntimeState(
     var crouchAmount: Float = 0f,
     var hitstunRemaining: Float = 0f,
     var activeAttack: ActiveAttack? = null,
+    var flashStep: FlashStepRuntime? = null,
     var animationTime: Float = 0f,
     var animationClipId: String = PoseLibrary.IDLE_BREATHE,
     var frame: StickFrame = StickAnimationLibrary.combatGuardFrame(),

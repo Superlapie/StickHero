@@ -71,6 +71,7 @@ class AndroidTouchInputMapper {
             if (bladeFlurryBounds.contains(x, y)) commands += GameCommand.BladeFlurry
             if (electroPulseBounds.contains(x, y)) commands += GameCommand.ElectroPulse
             if (flameBurstBounds.contains(x, y)) commands += GameCommand.FlameBurst
+            if (flashStepBounds.contains(x, y)) commands += GameCommand.FlashStep
         }
         if (restartPressed) {
             commands += GameCommand.Restart
@@ -111,7 +112,8 @@ class AndroidTouchInputMapper {
         earthSmashBounds.set(specialAttackBounds.left - gap - action, rowBottom - action, specialAttackBounds.left - gap, rowBottom)
 
         val topRowBottom = rowBottom - action - gap
-        flameBurstBounds.set(right - action, topRowBottom - action, right, topRowBottom)
+        flashStepBounds.set(right - action, topRowBottom - action, right, topRowBottom)
+        flameBurstBounds.set(flashStepBounds.left - gap - action, topRowBottom - action, flashStepBounds.left - gap, topRowBottom)
         bladeFlurryBounds.set(flameBurstBounds.left - gap - action, topRowBottom - action, flameBurstBounds.left - gap, topRowBottom)
         electroPulseBounds.set(bladeFlurryBounds.left - gap - action, topRowBottom - action, bladeFlurryBounds.left - gap, topRowBottom)
     }
@@ -128,6 +130,7 @@ class AndroidTouchInputMapper {
     val bladeFlurryBounds = RectF()
     val electroPulseBounds = RectF()
     val flameBurstBounds = RectF()
+    val flashStepBounds = RectF()
     val joystickTouchBounds = RectF()
     var joystickBaseX = 0f
         private set

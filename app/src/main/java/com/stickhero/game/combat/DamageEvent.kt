@@ -9,5 +9,6 @@ data class DamageEvent(
     val knockback: Knockback,
     val hitstunDuration: Float,
     val hitstopDuration: Float,
-    val impactShake: Float
+    val impactShake: Float,
+    val showImpactEffect: Boolean
 )

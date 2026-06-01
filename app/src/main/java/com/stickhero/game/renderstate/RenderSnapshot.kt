@@ -7,7 +7,6 @@ data class RenderSnapshot(
     val phase: GamePhase,
     val fighters: List<FighterRenderModel>,
     val hud: HudRenderModel,
-    val impacts: List<ImpactEffectRenderModel> = emptyList(),
     val camera: CameraRenderState = CameraRenderState(),
     val mode: GameMode = GameMode.Normal
 )

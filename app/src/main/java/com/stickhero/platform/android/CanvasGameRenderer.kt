@@ -18,7 +18,6 @@ class CanvasGameRenderer(
     private val hudRenderer = HudRenderer(paint)
     private val spriteRenderer = SpriteSheetFighterRenderer(context, paint)
     private val motionTrailRenderer = MotionTrailRenderer(paint)
-    private val impactEffectRenderer = ImpactEffectRenderer(context, paint)
 
     fun draw(canvas: Canvas, frame: SceneFrame) {
         val w = canvas.width.toFloat()
@@ -41,7 +40,6 @@ class CanvasGameRenderer(
         arenaRenderer.draw(canvas, WORLD_WIDTH, WORLD_HEIGHT)
         snapshot.fighters.forEach { motionTrailRenderer.draw(canvas, it) }
         snapshot.fighters.forEach { spriteRenderer.draw(canvas, it, WORLD_HEIGHT) }
-        impactEffectRenderer.draw(canvas, snapshot.impacts)
         canvas.restore()
         hudRenderer.draw(canvas, snapshot, WORLD_WIDTH)
         canvas.restore()
@@ -81,6 +79,7 @@ class CanvasGameRenderer(
         drawButton(canvas, inputMapper.electroPulseBounds, "EP")
         drawButton(canvas, inputMapper.bladeFlurryBounds, "BF")
         drawButton(canvas, inputMapper.flameBurstBounds, "FB")
+        drawButton(canvas, inputMapper.flashStepBounds, "FS")
         drawButton(canvas, inputMapper.earthSmashBounds, "ES")
         drawButton(canvas, inputMapper.specialAttackBounds, "KM")
         drawButton(canvas, inputMapper.attackBounds, "ATK")
